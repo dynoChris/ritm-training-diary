@@ -1,5 +1,6 @@
 """Publish only public assets to the existing GitHub Pages branch."""
 from pathlib import Path
+import hashlib
 import subprocess
 import tempfile
 
@@ -18,6 +19,13 @@ def main():
             target = checkout / filename
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((ROOT / filename).read_bytes())
+        release = hashlib.sha256(b''.join((ROOT / filename).read_bytes() for filename in PUBLIC_FILES)).hexdigest()[:12]
+        html = (checkout / 'index.html').read_text(encoding='utf-8')
+        for filename in ['styles.css', 'app.js', 'runtime-config.js']:
+            html = html.replace('"' + filename + '"', '"' + filename + '?v=' + release + '"')
+        (checkout / 'index.html').write_text(html, encoding='utf-8')
+        client = (checkout / 'app.js').read_text(encoding='utf-8').replace("import('./firebase-cloud.js')", "import('./firebase-cloud.js?v=" + release + "')")
+        (checkout / 'app.js').write_text(client, encoding='utf-8')
         (checkout / '.nojekyll').touch()
         subprocess.run(['git', 'add', '.'], cwd=checkout, check=True)
         if subprocess.run(['git', 'diff', '--cached', '--quiet'], cwd=checkout).returncode == 0:
