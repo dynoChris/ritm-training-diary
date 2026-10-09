@@ -17,7 +17,11 @@ async function apiRequest(path, options = {}) {
   const result = options.method === 'PUT' ? await cloudAdapter.save(JSON.parse(options.body)) : { status: 200, state: await cloudAdapter.load() };
   return { ok: result.status === 200, status: result.status, json: async () => result.status === 200 ? result.state : result };
 }
-function storageStatus() { $('#save-status').innerHTML = '<i></i> ' + (cloudMode ? (cloudConnected ? 'Синхронизировано' : 'Нет связи с хранилищем') : 'Локальное хранение'); }
+function storageStatus() {
+  const label = cloudMode ? (cloudConnected ? 'Синхронизировано' : 'Нет связи с хранилищем') : 'Локальное хранение';
+  $('#save-status').innerHTML = '<i></i> ' + label;
+  if ($('#cloud-footer-status')) $('#cloud-footer-status').textContent = label;
+}
 async function startCloud() {
   showAuth('Подключаем дневник…');
   const module = await import('./firebase-cloud.js');
@@ -422,7 +426,11 @@ if (cloudMode) {
     if (busy) return;
     try { await cloudAdapter.signOut(); } catch { toast('Не удалось выйти. Повтори попытку.'); }
   });
-  info.append(logout);
+  const sessionControls = document.createElement('div');
+  sessionControls.className = 'cloud-session-controls';
+  const status = document.createElement('span'); status.id = 'cloud-footer-status';
+  sessionControls.append(status, logout);
+  $('.page-footer').append(sessionControls);
   $('#login-form').addEventListener('submit', async event => {
     event.preventDefault();
     const button = $('#sign-in'); button.disabled = true;
