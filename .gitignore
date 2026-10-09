@@ -1,0 +1,12 @@
+__pycache__/
+data/*.tmp
+data/workouts.json
+.qa-data/
+data/server.log
+data/backups/
+data/imports/
+firebase-debug.log*
+.setup/
+.firebase/
+
+data/

@@ -1,0 +1,17 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "diaries": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid && $uid === 'eCFZA02cXMM6d89sbJl3OP8tJy12'",
+        ".write": "auth != null && auth.uid === $uid && $uid === 'eCFZA02cXMM6d89sbJl3OP8tJy12' && newData.exists()",
+        ".validate": "newData.hasChildren(['version', 'revision', 'payload'])",
+        "version": { ".validate": "newData.val() === 1" },
+        "revision": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() % 1 === 0 && ((!data.exists() && newData.val() === 0) || newData.val() === data.val() + 1)" },
+        "payload": { ".validate": "newData.isString() && newData.val().length <= 4194304" },
+        "$other": { ".validate": false }
+      }
+    }
+  }
+}
