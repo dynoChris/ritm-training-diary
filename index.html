@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta name="description" content="Личный календарь тренировок для компьютера и телефона.">
+  <title>Ритм — дневник тренировок</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="runtime-config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <section id="auth-gate" class="auth-gate" hidden aria-labelledby="auth-title">
+    <div class="auth-card"><div class="eyebrow">ЛИЧНЫЙ ДНЕВНИК</div><h1 id="auth-title">Твой ритм<span>.</span></h1><p id="auth-message">Войди, чтобы открыть свои тренировки на любом устройстве.</p><form id="login-form"><label class="field-label" for="login-name">Логин</label><input id="login-name" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required><label class="field-label" for="login-password">Пароль</label><input id="login-password" name="password" type="password" autocomplete="current-password" required><p id="login-error" class="form-error" role="alert" hidden></p><button id="sign-in" class="button primary" type="submit">Войти в дневник</button></form><button id="retry-cloud" class="button secondary" type="button">Повторить подключение</button></div>
+  </section>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="./" aria-label="Ритм — главная"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 19h6l4-11 5 17 4-10h5"/></svg></span>ритм<span class="brand-dot">.</span></a>
+      <div class="sidebar-caption">ТВОЁ ДВИЖЕНИЕ, ДЕНЬ ЗА ДНЁМ</div>
+      <nav aria-label="Основная навигация"><button class="nav-item active" id="calendar-nav"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M4 11h16m-11 4h2"/></svg>Календарь<span class="nav-dot"></span></button></nav>
+      <div class="sidebar-section-head"><span>ВИДЫ ТРЕНИРОВОК</span><button class="icon-button" id="add-type" aria-label="Добавить вид тренировки" title="Добавить вид тренировки">+</button></div>
+      <div id="type-list" class="type-list"></div>
+      <div class="sidebar-bottom"><div class="local-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><strong>Только на твоём компьютере</strong><p>Твоя история хранится в папке<br>с этим сайтом.</p><span class="save-status" id="save-status"><i></i> Локальное хранение</span></div>
+    </aside>
+    <main>
+      <header class="page-header"><div><div class="eyebrow">ЛИЧНЫЙ ДНЕВНИК</div><h1>Каждый день в движении<span>.</span></h1><p>Большие перемены начинаются с маленьких шагов.</p></div><button class="button primary" id="add-workout"><span class="plus">+</span>Добавить тренировку</button></header>
+      <section class="stats" aria-label="Общая и месячная статистика тренировок">
+        <div class="stat-card all-time-card"><span class="stat-label">Тренировочных дней за всё время</span><div class="stat-value" id="total-training-days">0</div><span class="stat-detail">Каждый день считается один раз</span><div class="stat-decoration" aria-hidden="true">↗</div></div>
+        <div class="stat-card"><span class="stat-label">Дни в выбранном месяце</span><div class="stat-value"><span id="active-days">0</span><span class="stat-unit" id="month-length">/ 31</span></div><span class="stat-detail" id="month-detail"></span><div class="mini-bars" id="activity-bars" aria-hidden="true"></div></div>
+        <div class="stat-card streak-card"><span class="stat-label">Серия до сегодня</span><div class="stat-value"><span id="streak">0</span><span class="stat-unit" id="streak-unit">дней</span></div><span class="stat-detail" id="streak-detail">Начни с одной тренировки</span><svg class="streak-art" viewBox="0 0 60 72" aria-hidden="true"><path d="M32 3c5 16-9 17-5 30 5-4 7-10 7-10 17 13 19 24 13 36-9 18-37 12-39-7C6 37 21 29 20 14c6 4 7 10 7 10S33 14 32 3Z"/><path d="M29 40c-1 9-9 10-8 19 1 8 14 10 18 1 3-8-6-12-10-20Z"/></svg></div>
+      </section>
+      <div class="workspace">
+        <section class="calendar-card" aria-label="Календарь тренировок">
+          <div class="calendar-toolbar"><div class="month-heading"><h2 id="month-title"></h2><span id="month-year"></span></div><div class="calendar-controls"><button class="button today-button" id="go-today">Сегодня</button><button class="icon-button arrow-button" id="prev-month" aria-label="Предыдущий месяц">‹</button><button class="icon-button arrow-button" id="next-month" aria-label="Следующий месяц">›</button></div></div>
+          <div class="weekdays" aria-hidden="true"><span>ПН</span><span>ВТ</span><span>СР</span><span>ЧТ</span><span>ПТ</span><span class="weekend">СБ</span><span class="weekend">ВС</span></div>
+          <div class="calendar-scroll" id="calendar-scroll" tabindex="0" role="region" aria-label="Лента календаря — прокручивай вверх и вниз"><div class="calendar-grid" id="calendar-grid"></div></div>
+          <div class="calendar-footer"><span><i class="today-dot"></i>Сегодня</span><span>Колёсико — прокрутка · клик — тренировки</span></div>
+        </section>
+        <aside class="day-panel" aria-label="Тренировки выбранного дня"><div class="day-panel-head"><div><div class="eyebrow" id="selected-relative">СЕГОДНЯ</div><h2 id="selected-title"></h2><span id="selected-weekday"></span></div><button class="icon-button day-add" id="add-selected" aria-label="Добавить тренировку на выбранный день">+</button></div><div class="day-content" id="day-content"></div><div class="day-panel-bottom"><span class="tiny-leaf" aria-hidden="true">✳</span><p>Не сравнивай себя с другими.<br>Сравнивай себя со вчерашним собой.</p></div></aside>
+      </div>
+      <footer class="page-footer"><span>Маленький шаг сегодня. Новый ритм завтра.</span><button class="text-button" id="export-data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Скачать копию данных</button></footer>
+      <div id="connection-error" class="connection-error" hidden></div>
+    </main>
+  </div>
+  <dialog id="workout-dialog" class="modal"><form id="workout-form"><div class="modal-header"><div><div class="eyebrow">ШАГ К ПРИВЫЧКЕ</div><h2 id="workout-modal-title">Новая тренировка</h2></div><button type="button" class="icon-button close-dialog" aria-label="Закрыть">×</button></div><div class="workout-datetime"><div><label class="field-label" for="workout-date">Когда тренировался?</label><input type="date" id="workout-date" name="date" required></div><div><div class="time-field-label"><label class="field-label" for="workout-time">Время</label><button type="button" class="time-now" id="time-now">Сейчас</button></div><input type="time" id="workout-time" name="time" required step="60" aria-label="Время тренировки"></div></div><fieldset><legend>Чем занимался?</legend><div class="exercise-options" id="exercise-options"></div></fieldset><label class="field-label" for="workout-note">Пара слов о тренировке <span>необязательно</span></label><textarea id="workout-note" name="note" maxlength="500" rows="3" placeholder="Например: 3 подхода по 15, чувствую себя отлично"></textarea><div class="note-meta"><span id="note-total-preview" class="note-total-preview" role="status" hidden></span><div class="note-counter"><span id="note-count">0</span> / 500</div></div><p class="form-error" id="workout-error" role="alert" hidden></p><div class="modal-actions"><button type="button" class="button secondary close-dialog">Отмена</button><button type="submit" class="button primary" id="save-workout">Сохранить тренировку</button></div></form></dialog>
+  <dialog id="type-dialog" class="modal type-modal"><form id="type-form"><div class="modal-header"><div><div class="eyebrow">ТВОЙ ВЫБОР</div><h2>Новый вид тренировки</h2></div><button type="button" class="icon-button close-dialog" aria-label="Закрыть">×</button></div><label class="field-label" for="type-name">Название</label><input id="type-name" maxlength="40" required placeholder="Например: прогулка с собакой"><fieldset><legend>Выбери иконку и цвет</legend><div id="type-icon-options" class="exercise-options"></div></fieldset><p class="form-error" id="type-error" role="alert" hidden></p><div class="modal-actions"><button type="button" class="button secondary close-dialog">Отмена</button><button type="submit" class="button primary">Добавить вид</button></div></form></dialog>
+  <dialog id="delete-dialog" class="modal delete-modal"><form id="delete-form"><div class="modal-header"><h2>Удалить тренировку?</h2><button type="button" class="icon-button close-dialog" aria-label="Закрыть">×</button></div><p>Эта запись исчезнет из календаря.</p><div class="modal-actions"><button type="button" class="button secondary close-dialog">Оставить</button><button type="submit" class="button danger">Удалить</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>
