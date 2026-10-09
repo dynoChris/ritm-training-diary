@@ -15,6 +15,11 @@ export async function connect(config, handlers) {
   const auth = getAuth(app);
   const db = getDatabase(app);
   let unsubscribe = null;
+  let connected = false;
+  onValue(ref(db, '.info/connected'), snapshot => {
+    connected = snapshot.val() === true;
+    handlers.onConnection(connected);
+  });
   await setPersistence(auth, browserLocalPersistence);
   function stateRef() {
     if (!auth.currentUser) throw new Error('Войди в дневник ещё раз.');
@@ -39,6 +44,7 @@ export async function connect(config, handlers) {
     signOut: () => signOut(auth),
     async load() { return decode((await get(stateRef())).val()); },
     async save(next) {
+      if (!connected || !navigator.onLine) throw new Error('Нет связи с хранилищем. Проверь интернет и повтори сохранение.');
       const target = stateRef();
       // Warm the local cache; the server retries this transaction against its latest value.
       await get(target);

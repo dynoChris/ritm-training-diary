@@ -21,6 +21,9 @@ def ready():
 
 
 def main():
+    if '--cloud' in sys.argv:
+        webbrowser.open('https://dynochris.github.io/ritm-training-diary/')
+        return
     if not ready():
         (ROOT / 'data').mkdir(exist_ok=True)
         with (ROOT / 'data' / 'server.log').open('ab') as log:
