@@ -24,7 +24,7 @@ function storageStatus() {
 }
 async function startCloud() {
   showAuth('Подключаем дневник…');
-  const module = await import('./firebase-cloud.js');
+  const module = await import('./firebase-cloud.js?v=12ff59704b25');
   cloudAdapter = await module.connect(window.RITM_CONFIG.firebase, {
     onSession(user) {
       if (user) { $('#login-password').value = ''; load(); }
