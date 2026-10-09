@@ -4,6 +4,7 @@ const $ = selector => document.querySelector(selector);
 const cloudMode = !['localhost', '127.0.0.1', ''].includes(location.hostname);
 let cloudAdapter = null;
 let cloudReady = null;
+let cloudConnected = false;
 function showAuth(message) {
   $('.app-shell').hidden = true;
   $('#auth-gate').hidden = false;
@@ -16,7 +17,7 @@ async function apiRequest(path, options = {}) {
   const result = options.method === 'PUT' ? await cloudAdapter.save(JSON.parse(options.body)) : { status: 200, state: await cloudAdapter.load() };
   return { ok: result.status === 200, status: result.status, json: async () => result.status === 200 ? result.state : result };
 }
-function storageStatus() { $('#save-status').innerHTML = '<i></i> ' + (cloudMode ? 'Синхронизировано' : 'Локальное хранение'); }
+function storageStatus() { $('#save-status').innerHTML = '<i></i> ' + (cloudMode ? (cloudConnected ? 'Синхронизировано' : 'Нет связи с хранилищем') : 'Локальное хранение'); }
 async function startCloud() {
   showAuth('Подключаем дневник…');
   const module = await import('./firebase-cloud.js');
@@ -27,6 +28,7 @@ async function startCloud() {
         loaded = false;
         state = { revision: 0, types: BASE_TYPES, workouts: [] };
         document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+        render();
         showAuth();
       }
     },
@@ -35,7 +37,8 @@ async function startCloud() {
       if (document.querySelector('dialog[open]')) return;
       state = next; render(); storageStatus();
     },
-    onError() { if (loaded) toast('Связь с хранилищем прервалась. Проверь интернет.'); }
+    onError() { if (loaded) toast('Связь с хранилищем прервалась. Проверь интернет.'); },
+    onConnection(connected) { cloudConnected = connected; if (!busy) storageStatus(); }
   });
 }
 const ICONS = {
